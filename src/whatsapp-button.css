@@ -1,0 +1,15 @@
+/* Floating WhatsApp button: green circle in the bottom-right corner; on hover-capable screens a "Chat with us" label slides out. */
+.wa-fab { position:fixed; right:calc(24px + env(safe-area-inset-right, 0px)); bottom:calc(24px + env(safe-area-inset-bottom, 0px)); z-index:20; display:flex; align-items:center; height:58px; border-radius:999px; background:#25d366; color:#fff; box-shadow:0 10px 26px rgba(18,140,74,.32), 0 2px 6px rgba(0,0,0,.14); transition:transform .2s ease, box-shadow .2s ease, background .2s ease; }
+.wa-fab-icon { display:grid; place-items:center; width:58px; height:58px; flex:none; }
+.wa-fab-icon svg { display:block; }
+.wa-fab-label { max-width:0; overflow:hidden; white-space:nowrap; opacity:0; font-size:14px; font-weight:700; letter-spacing:.01em; transition:max-width .25s ease, opacity .2s ease, padding .25s ease; }
+.wa-fab:hover { background:#1ebe5a; transform:translateY(-2px); box-shadow:0 14px 30px rgba(18,140,74,.4), 0 3px 8px rgba(0,0,0,.16); }
+.wa-fab:focus-visible { outline:3px solid #128c7e; outline-offset:3px; }
+@media (hover:hover) {
+  .wa-fab:is(:hover,:focus-visible) .wa-fab-label { max-width:150px; opacity:1; padding-left:22px; }
+}
+@media (max-width:600px) {
+  .wa-fab { right:calc(16px + env(safe-area-inset-right, 0px)); bottom:calc(16px + env(safe-area-inset-bottom, 0px)); height:54px; }
+  .wa-fab-icon { width:54px; height:54px; }
+}
+@media (prefers-reduced-motion:reduce) { .wa-fab, .wa-fab-label { transition:none; } .wa-fab:hover { transform:none; } }

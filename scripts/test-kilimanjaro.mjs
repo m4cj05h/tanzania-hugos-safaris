@@ -1,0 +1,116 @@
+import {chromium, expect} from '@playwright/test';
+import {spawn} from 'node:child_process';
+import {mkdtempSync, rmSync} from 'node:fs';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
+import assert from 'node:assert/strict';
+
+const dir=mkdtempSync(join(tmpdir(),'hugos-kili-'));
+const server=spawn(process.execPath,['server/index.js'],{env:{...process.env,NODE_ENV:'production',PORT:'3196',ADMIN_PASSWORD:'isolated-test-password',DATA_DIR:dir},stdio:'pipe'});
+const base='http://127.0.0.1:3196';
+let browser;
+try {
+  let ready=false;
+  for(let i=0;i<100;i++) {try {if((await fetch(base+'/api/content')).ok){ready=true;break;}} catch {} await new Promise(r=>setTimeout(r,100));}
+  assert.ok(ready,'Isolated test server started');
+  browser=await chromium.launch({headless:true,channel:'chromium'});
+  const page=await browser.newPage({viewport:{width:1440,height:1000},reducedMotion:'reduce'});
+  await page.addInitScript(()=>sessionStorage.setItem('hugos-itinerary-dismissed','yes'));
+  const errors=[];
+  page.on('pageerror',e=>errors.push(e.message));
+  await page.goto(base+'/kilimanjaro');
+  await expect(page.locator('.kili-hero > img')).toBeVisible();
+  await expect(page.getByRole('tab')).toHaveCount(6);
+  await expect(page.locator('.kili-map-terrain')).toBeVisible();
+  await expect(page.locator('.kili-map-terrain')).toHaveAttribute('src','/images/kilimanjaro/terrain-transparent.webp');
+  await expect(page.locator('.kili-map-route')).toHaveAttribute('src','/images/kilimanjaro/machame-orange.webp');
+  await page.getByRole('tab',{name:/Umbwe/}).click();
+  await expect(page.locator('.kili-map-route')).toHaveAttribute('src','/images/kilimanjaro/umbwe-orange.webp');
+  await expect(page.locator('.kili-route-detail h3')).toHaveText('Umbwe Route');
+  await page.getByRole('tab',{name:/Machame/}).click();
+  await expect(page.locator('.kili-calc-total [data-price-usd]')).toHaveAttribute('data-price-usd','3700');
+  await page.evaluate(async()=>{await document.fonts.ready;await Promise.all([...document.querySelectorAll('.kili-page img')].map(img=>{img.loading='eager';return img.decode().catch(()=>{});}));});
+  await page.screenshot({path:'/tmp/kilimanjaro-desktop.png',fullPage:true});
+  await page.screenshot({path:'/tmp/kilimanjaro-hero.png'});
+  await page.getByRole('button',{name:'Add one climber',exact:true}).click();
+  await expect(page.locator('.kili-calc-total [data-price-usd]')).toHaveAttribute('data-price-usd','5550');
+  await page.getByRole('tab',{name:/Machame/}).focus();
+  await page.keyboard.press('ArrowRight');
+  await expect(page.getByRole('tab',{name:/Lemosho/})).toBeFocused();
+  await expect(page.getByRole('tab',{name:/Lemosho/})).toHaveAttribute('aria-selected','true');
+  await expect(page.locator('.kili-route-detail h3')).toHaveText('Lemosho Route');
+  await expect(page.locator('.kili-calc-total')).toHaveText('Quote on request');
+  await page.getByRole('link',{name:'Request my personal quote'}).click();
+  await expect(page.getByLabel('Adults',{exact:true})).toHaveValue('3');
+  await expect(page.locator('textarea[name=requests]')).toHaveValue(/Lemosho route for 3 climbers/);
+  await expect(page.locator('input[value=Kilimanjaro]')).toBeChecked();
+  let submitted;
+  await page.route('**/api/enquiries',async route=>{
+    submitted=route.request().postDataJSON();
+    await route.fulfill({status:201,json:{id:'HUG-KILI-TEST'}});
+  });
+  await page.getByLabel('Full name',{exact:true}).fill('Kilimanjaro Test Traveller');
+  await page.getByLabel('Email address',{exact:true}).fill('climber@example.com');
+  await page.getByLabel('WhatsApp number',{exact:true}).fill('+44123456789');
+  await page.getByLabel('Country',{exact:true}).fill('United Kingdom');
+  const nextYear=new Date().getFullYear()+1;
+  await page.getByLabel('Arrival date').fill(`${nextYear}-07-01`);
+  await page.getByLabel('Departure date').fill(`${nextYear}-07-14`);
+  await page.locator('.consent input').check();
+  await page.getByRole('button',{name:'Create my trip'}).click();
+  await expect(page.getByText('Let the adventure begin.')).toBeVisible();
+  assert.equal(submitted.adults,'3');
+  assert.match(submitted.requests,/Lemosho route for 3 climbers/);
+  assert.ok(submitted.interests.includes('Kilimanjaro'));
+
+  await page.goto(base+'/kilimanjaro');
+  await page.getByLabel('Choose your route').selectOption('2');
+  await expect(page.getByRole('tab',{name:/Marangu/})).toHaveAttribute('aria-selected','true');
+  await page.getByLabel('Choose your route').selectOption('0');
+  await page.getByLabel('Time on the mountain').selectOption('tailored');
+  await expect(page.locator('.kili-calc-total')).toHaveText('Quote on request');
+  await page.getByLabel('Time on the mountain').selectOption('published');
+  await page.getByRole('button',{name:'Remove one climber',exact:true}).click();
+  await expect(page.getByRole('button',{name:'Remove one climber',exact:true})).toBeDisabled();
+  for(let i=1;i<20;i++) await page.getByRole('button',{name:'Add one climber',exact:true}).click();
+  await expect(page.getByRole('button',{name:'Add one climber',exact:true})).toBeDisabled();
+  await expect(page.locator('.kili-calc-total [data-price-usd]')).toHaveAttribute('data-price-usd','37000');
+  await page.getByRole('link',{name:'Request my personal quote'}).click();
+  await expect(page.getByLabel('Adults',{exact:true})).toHaveValue('20');
+  await expect(page.locator('select[name=package]')).toHaveValue('machame-route');
+  await page.goto(base+'/kilimanjaro');
+  await page.locator('.kili-faq summary').nth(1).click();
+  await expect(page.locator('.kili-faq details').nth(1)).toHaveAttribute('open','');
+  await expect(page.locator('.kili-hero-bottom')).toHaveCount(0);
+  await expect(page.getByRole('navigation',{name:'On this page'})).toHaveCount(0);
+  await expect(page.locator('.kili-breadcrumb, .kili-hero-copy')).toHaveCount(0);
+  for (const width of [320,390,768,1024,1440]) {
+    await page.setViewportSize({width,height:900});
+    assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),`No overflow at ${width}px`);
+    assert.ok(await page.locator('#rates').evaluate(el=>el.getBoundingClientRect().top>=document.querySelector('.site-header-shell').getBoundingClientRect().bottom-1),`Anchor clears the site navigation at ${width}px`);
+  }
+  await page.setViewportSize({width:390,height:844});
+  await page.evaluate(()=>window.scrollTo(0,0));
+  await page.screenshot({path:'/tmp/kilimanjaro-mobile.png',fullPage:true});
+  await page.screenshot({path:'/tmp/kilimanjaro-mobile-hero.png'});
+  await page.evaluate(()=>document.documentElement.dataset.theme='dark');
+  await page.screenshot({path:'/tmp/kilimanjaro-dark.png',fullPage:true});
+  await page.route('**/api/exchange-rates',route=>route.fulfill({json:{rates:{USD:1,EUR:0.9},status:'fresh'}}));
+  await page.evaluate(()=>localStorage.setItem('hugos-currency','EUR'));
+  await page.reload();
+  await expect(page.locator('.kili-calc-heading')).toContainText('EUR');
+  await expect(page.locator('.kili-calc-total')).toContainText('3,330');
+  await expect(page.locator('.kili-calc-disclaimer')).toContainText('final quotes are in USD');
+  // Missing or unpublished prices must never become a stale numeric quote.
+  await page.route('**/api/content',async route=>{
+    const response=await route.fetch();const content=await response.json();
+    content.packages=content.packages.filter(p=>p.id!=='machame-route');
+    await route.fulfill({json:content});
+  });
+  await page.reload();
+  await expect(page.locator('.kili-calc-total')).toHaveText('Quote on request');
+  await expect(page.locator('.kili-itinerary-empty')).toBeVisible();
+  assert.equal(await page.locator('.kili-page [data-price-usd]').count(),0);
+  assert.deepEqual(errors,[]);
+  console.log('PASS: route keyboard controls, route/calculator sync, published and custom estimates, group limits, quote handoff and form submission, currency conversion, FAQs, missing package fallback, sticky anchors and layouts at 320–1440px. Screenshots: /tmp/kilimanjaro-{desktop,mobile,dark}.png');
+} finally {await browser?.close();server.kill();rmSync(dir,{recursive:true,force:true});}

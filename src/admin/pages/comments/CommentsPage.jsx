@@ -1,0 +1,12 @@
+import React,{useEffect,useState} from 'react';
+import {MessageCircle} from 'lucide-react';
+import {h} from '../../../locale';
+
+export default function CommentsPage(){
+  const [comments,setComments]=useState([]),[message,setMessage]=useState('');
+  const load=()=>fetch('/api/admin/comments').then(async response=>{const result=await response.json();if(!response.ok)throw Error(result.error);setComments(result)}).catch(error=>setMessage(error.message));
+  useEffect(()=>{load();},[]);
+  const update=(id,key,value)=>setComments(items=>items.map(item=>item.id===id?{...item,[key]:value}:item));
+  async function save(item){setMessage('');try{const response=await fetch(`/api/admin/comments/${encodeURIComponent(item.id)}`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({reply:item.reply,published:item.published})});const result=await response.json();if(!response.ok)throw Error(result.error);setMessage('Comment updated successfully.');load()}catch(error){setMessage(error.message)}}
+  return <div className="comments-admin"><div className="section-heading"><div><h2>Kilimanjaro comments</h2><p>Visitor comments appear on the Kilimanjaro page as soon as they are posted. Write a reply here, or hide any comment that is not appropriate.</p></div></div>{message&&<p className="notice" role="status">{message}</p>}{!comments.length?<div className="empty-state"><MessageCircle size={30}/><h3>No comments yet</h3><p>New Kilimanjaro comments will appear here.</p></div>:comments.map(item=><details className="enquiry" key={item.id}><summary><strong>{item.name}</strong><span>{new Date(item.created).toLocaleDateString()} · {item.status}</span><span className="status-pill">{item.published?'Public':'Hidden'}</span></summary><div className="enquiry-details">{item.parentId&&<p><strong>Threaded reply to:</strong> {comments.find(parent=>parent.id===item.parentId)?.name||item.parentId}</p>}<p><strong>Email:</strong> {item.email}</p><p><strong>Comment:</strong> {item.text}</p><label className="admin-comment-reply">Your public reply<textarea rows="5" maxLength="2000" value={item.reply} onChange={event=>update(item.id,'reply',event.target.value)}/></label><label className="consent"><input type="checkbox" checked={item.published} onChange={event=>update(item.id,'published',event.target.checked)}/>Show this comment and reply on the Kilimanjaro page (untick to hide it)</label><button className="button" type="button" onClick={()=>save(item)}>Save comment</button></div></details>)}</div>;
+}

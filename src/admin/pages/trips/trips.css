@@ -1,0 +1,12 @@
+.trips-toolbar{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.trips-toolbar select{width:auto!important;min-width:140px}
+.trips-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+.trips-chips button{display:inline-flex;align-items:center;gap:8px;padding:8px 13px;border:1px solid var(--admin-border);border-radius:30px;background:var(--admin-card);color:var(--ink);font-size:13px}
+.trips-chips button span{font-size:11px;font-weight:700;padding:1px 7px;border-radius:20px;background:var(--admin-bg);color:var(--admin-muted)}
+.trips-chips button[aria-pressed=true]{background:#2b2414;border-color:#2b2414;color:#fff}.trips-chips button[aria-pressed=true] span{background:#ffffff26;color:#fff}
+[data-theme="dark"] .trips-chips button[aria-pressed=true]{background:#f4eadb;border-color:#f4eadb;color:#2b2414}[data-theme="dark"] .trips-chips button[aria-pressed=true] span{background:#2b241422;color:#2b2414}
+.trips-group{margin-bottom:26px}
+.admin .trips-group>h2{display:flex;align-items:center;gap:9px;font-size:16px;margin:0 0 12px}.trips-group>h2 span{font-size:12px;color:var(--admin-muted);font-weight:500}
+.trip-editor h3{font-size:12px;letter-spacing:1.4px;text-transform:uppercase;color:var(--admin-muted);margin:24px 0 12px}
+.trip-editor-top{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;padding-bottom:4px}.trip-editor-top .admin-row-actions{margin:0}
+@media(max-width:600px){.trip-row .admin-pill{display:none}}

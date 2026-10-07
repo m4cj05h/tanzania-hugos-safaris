@@ -1,0 +1,50 @@
+:root { color-scheme: light; }
+.header-utility-right > .theme-toggle { display: inline-flex; gap: 6px; align-items: center; white-space: nowrap; border: 1px solid #d9d1c2; border-radius: 5px; padding: 5px 8px; font-size: 10px; }
+.theme-toggle:hover { background: #eae3d6; }
+:root[data-theme="dark"] { color-scheme: dark; --ink: #f2eee5; --cream: #242621; --muted: #b8b7ae; --line: #42453c; color: var(--ink); background: #191b18; }
+[data-theme="dark"] body { background: #191b18; color: var(--ink); }
+[data-theme="dark"] p { color: #c3c1b7; }
+[data-theme="dark"] :is(.site-header-shell, header.site-header, .mega-menu, .header-search, .site-header .site-nav.mobile-open, .regional-picker, .regional-dialog, .package-card, .trip-form, .publish-bar, .itinerary-popup, .discovery-bar, .skip-link) { background: #20231e; color: var(--ink); border-color: var(--line); }
+[data-theme="dark"] :is(.header-utility, .combo, .escape-editorial, .journal-section, .final-cta, .afcon-banner, .currency-notice, .regional-tabs, .regional-picker-footer) { background: #292c25; color: var(--ink); border-color: var(--line); }
+[data-theme="dark"] :is(input, select, textarea, .regional-search, .regional-options > button) { background: #191b18; color: var(--ink); border-color: #55594e; }
+[data-theme="dark"] input::placeholder, [data-theme="dark"] textarea::placeholder { color: #a9ac9f; }
+[data-theme="dark"] button { color: var(--ink); }
+[data-theme="dark"] :is(.header-utility-right > button, .regional-selectors .region-trigger, .header-mobile-toggle, .nav-category-row > button, .mobile-nav-title > button, .regional-picker-close, .mega-links > a, .mobile-submenu > a, .filter-tabs button, .landing-page .filter-tabs button, .regional-options small, .regional-option, .regional-option small, .regional-picker-heading p, .regional-picker-footer p, .regional-note, .regional-rate, .reading-width li) { color: #d0cec3; }
+[data-theme="dark"] :is(.eyebrow, .mega-overline, .mega-personal, .header-search-results small, .caption, .stars, .regional-search, .regional-code) { color: #edb87e; }
+[data-theme="dark"] :is(.mega-description p, .header-local) { color: #c3c1b7; }
+[data-theme="dark"] :is(.mega-links > a.preview-active, .header-search-results > a:hover, .mobile-submenu > a:hover, .regional-option:hover, .regional-option[aria-selected=true], .regional-options > button.chosen, .regional-selectors .region-trigger:hover, .regional-selectors .region-trigger[aria-expanded=true], .theme-toggle:hover, .regional-tabs > button[aria-selected=true]) { background: #3b3529; color: #ffcc91; }
+[data-theme="dark"] :is(.image-label, .round-arrow, .landing-page .card-image .image-label, .landing-page .round-arrow, .status-pill, .regional-code, .regional-picker-icon, .regional-icon) { background: #34382e; color: #f5e9d3; }
+[data-theme="dark"] :is(.button, .header-plan, .mega-cta, .regional-done) { color: #251b0d; }
+[data-theme="dark"] .button.secondary { color: var(--ink); border-color: #777c6c; }
+[data-theme="dark"] .button.secondary:hover { background: #ffffff12; }
+[data-theme="dark"] .filter-tabs button.active { background: #edb87e; color: #251b0d; border-color: #edb87e; }
+[data-theme="dark"] .landing-page .filter-tabs button.active { background: transparent; color: #ffcc91; }
+[data-theme="dark"] .local-photo:before { background: #35392e; }
+[data-theme="dark"] .error { background: #482a24; color: #ffbaaa; }
+[data-theme="dark"] :is(.mega-links, .header-search-results > a, .nav-category, .mobile-nav-title, .discovery-bar > a, .discovery-heading, .landing-page .filter-tabs, .regional-search, .regional-picker-heading, .regional-picker-footer) { border-color: var(--line); }
+[data-theme="dark"] :is(button, a, summary):focus-visible { outline-color: #ffbc70; }
+[data-theme="dark"] :is(input, select, textarea):focus-visible { outline: none; border-color: #8f9b90; }
+@media (max-width: 600px) {
+  .header-local { display: none; }
+  .header-utility .header-width { justify-content: flex-end; }
+  .header-utility-right { width: 100%; justify-content: space-between; gap: 4px; }
+  .header-utility-right > .theme-toggle { font-size: 9px; padding: 4px 6px; }
+}
+[data-theme="dark"] :is(.regional-result:hover) { background: #3b3529; border-color: #66543c; }
+[data-theme="dark"] :is(.regional-option-badge, .is-selected .regional-option-badge, .regional-symbol) { background: #34382e; color: #edb87e; border-color: #55594e; }
+[data-theme="dark"] .regional-result .regional-symbol, [data-theme="dark"] .regional-result .regional-flag { background: transparent; border: 0; }
+[data-theme="dark"] :is(.regional-currency-code, .regional-selected-check, .regional-empty strong) { color: #edb87e; }
+[data-theme="dark"] :is(.admin .section-heading > button, .editor-form > button, .itinerary-popup .close, .regional-empty button) { background: #34382e; color: var(--ink); }
+
+/* Page surfaces and text must switch together, including the homepage wrapper. */
+[data-theme="dark"] .landing-page { background: #191b18; color: var(--ink); }
+[data-theme="dark"] .landing-page h2 em { color: #edb87e; }
+[data-theme="dark"] .afcon-editorial > .button { color: #ffe0b2; }
+[data-theme="dark"] :is(.text-link:hover, nav a:hover, .nav-category-row > a:hover, .menu-active .nav-category-row > a, .article-card:hover h3, .discovery-bar > a:hover, .header-utility-right > a:hover, .mobile-nav-footer > a:last-child) { color: #ffcc91; }
+[data-theme="dark"] :is(.regional-results-heading, .regional-results-heading > span:last-child, .regional-option-copy small, .regional-picker-footer, .regional-empty) { color: #c3c1b7; }
+[data-theme="dark"] :is(.cinema-copy > p, .experience-tile p, .page-hero.with-image p, .mountain-feature p) { color: #f1eee5; }
+[data-theme="dark"] .slide-selectors button { opacity: 1; }
+[data-theme="dark"] .itinerary > div > span { color: #edb87e; }
+[data-theme="dark"] .partner-logo img { filter: url(#partner-logo-dark); mix-blend-mode: normal; }
+[data-theme="dark"] .showcase-card { background: #292c25; border-color: var(--line); }
+[data-theme="dark"] .showcase-card:hover { background: #3b3529; border-color: #edb87e; }

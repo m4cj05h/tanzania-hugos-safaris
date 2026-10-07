@@ -1,0 +1,151 @@
+[
+ {
+  "id": "migration-safari",
+  "name": "The Great Migration",
+  "category": "Safari",
+  "days": 8,
+  "price": 4300,
+  "destinations": "Tarangire · Serengeti · Ngorongoro",
+  "image": "safari.webp",
+  "itinerary": [
+   "Arrival at Kilimanjaro Airport and transfer to Arusha",
+   "Tarangire game drive",
+   "Journey to the Serengeti",
+   "Full day exploring the Serengeti",
+   "Northern Serengeti migration experience",
+   "Ngorongoro Conservation Area via Olduvai Gorge",
+   "Crater game drive and return to Arusha",
+   "Airport transfer and departure"
+  ],
+  "description": "Follow the rhythm of the wild across the Serengeti’s endless plains. Wildlife movements and river crossings vary with the season.",
+  "published": true,
+  "accommodation": "Lodge or camp, confirmed in your quotation",
+  "included": "Please request the itemised quotation for your dates and group.",
+  "excluded": "International flights, visas and personal expenses unless specified in your quotation."
+ },
+ {
+  "id": "ngorongoro-crater",
+  "name": "Ngorongoro Crater Safari",
+  "category": "Safari",
+  "days": 4,
+  "price": 1800,
+  "destinations": "Arusha · Ngorongoro",
+  "image": "crater.webp",
+  "itinerary": [
+   "Arrive in Arusha and meet your team",
+   "Travel to Ngorongoro Conservation Area",
+   "Explore the crater on a game drive",
+   "Return transfer and departure"
+  ],
+  "description": "An extraordinary journey into Tanzania’s iconic volcanic landscape. The final itinerary is tailored to your arrival and accommodation.",
+  "published": true,
+  "accommodation": "Lodge or camp, confirmed in your quotation",
+  "included": "Please request the itemised quotation for your dates and group.",
+  "excluded": "International flights, visas and personal expenses unless specified in your quotation."
+ },
+ {
+  "id": "mikumi-safari",
+  "name": "Mikumi Wildlife Escape",
+  "category": "Safari",
+  "days": 3,
+  "price": 650,
+  "destinations": "Dar es Salaam · Mikumi",
+  "image": "elephants.webp",
+  "itinerary": [
+   "Pickup in Dar es Salaam, drive to Mikumi and afternoon game drive",
+   "Full-day game drive with picnic lunch",
+   "Morning game drive and return to Dar es Salaam"
+  ],
+  "description": "A short escape with a big sense of adventure. Discover open grasslands and wildlife with a convenient Dar es Salaam departure.",
+  "published": true,
+  "accommodation": "Lodge or camp, confirmed in your quotation",
+  "included": "Please request the itemised quotation for your dates and group.",
+  "excluded": "International flights, visas and personal expenses unless specified in your quotation."
+ },
+ {
+  "id": "kendwa-beach",
+  "name": "Kendwa Beach Escape",
+  "category": "Zanzibar",
+  "days": 6,
+  "price": 1950,
+  "destinations": "Zanzibar · Kendwa Beach",
+  "image": "zanzibar.webp",
+  "itinerary": [
+   "Arrive in Zanzibar and transfer to Kendwa",
+   "Beach time at your own pace",
+   "Optional Stone Town exploration",
+   "Optional ocean excursion",
+   "Relax on Kendwa Beach",
+   "Airport transfer and departure"
+  ],
+  "description": "Slow mornings, white sand and sunsets over the Indian Ocean. Optional activities and hotel choices are confirmed in your quote.",
+  "published": true,
+  "accommodation": "Lodge or camp, confirmed in your quotation",
+  "included": "Please request the itemised quotation for your dates and group.",
+  "excluded": "International flights, visas and personal expenses unless specified in your quotation."
+ },
+ {
+  "id": "machame-route",
+  "name": "Kilimanjaro via Machame",
+  "category": "Kilimanjaro",
+  "days": 6,
+  "price": 1850,
+  "destinations": "Kilimanjaro · Machame Route",
+  "image": "mountain.webp",
+  "itinerary": [
+   "Machame Gate to Machame Camp",
+   "Climb to Shira Camp",
+   "Lava Tower and Barranco Camp",
+   "Continue to Barafu Camp",
+   "Summit attempt and descent to Mweka Camp",
+   "Descend to Mweka Gate"
+  ],
+  "description": "A mountain journey through changing landscapes on the Machame route. Ask our team about preparation and longer acclimatisation options.",
+  "published": true,
+  "accommodation": "Lodge or camp, confirmed in your quotation",
+  "included": "Please request the itemised quotation for your dates and group.",
+  "excluded": "International flights, visas and personal expenses unless specified in your quotation."
+ },
+ {
+  "id": "safari-zanzibar",
+  "name": "Bush to Beach, Your Way",
+  "category": "Combination",
+  "days": 10,
+  "price": 0,
+  "destinations": "Serengeti · Ngorongoro · Zanzibar",
+  "image": "zanzibar.webp",
+  "itinerary": [
+   "Arrive and meet your safari team",
+   "Explore Tanzania’s national parks",
+   "Fly or transfer to Zanzibar",
+   "Enjoy your beach extension",
+   "Departure transfer"
+  ],
+  "description": "Combine the thrill of a safari with time on Zanzibar’s coast. Your route, duration and price are designed around you.",
+  "published": true,
+  "accommodation": "Lodge or camp, confirmed in your quotation",
+  "included": "Please request the itemised quotation for your dates and group.",
+  "excluded": "International flights, visas and personal expenses unless specified in your quotation."
+ },
+ {
+  "id": "afcon-safari",
+  "name": "Football & the Wild",
+  "category": "AFCON",
+  "days": 5,
+  "price": 0,
+  "destinations": "Match city · Safari extension",
+  "image": "safari.webp",
+  "itinerary": [
+   "Arrival and private airport transfer",
+   "Match-day transportation planning",
+   "Travel to your selected safari destination",
+   "Game drive and lodge stay",
+   "Return transfer or extend to Zanzibar"
+  ],
+  "description": "Build your Tanzania visit around the football, with safari days to remember. Schedule dependent; match tickets are not included.",
+  "published": true,
+  "accommodation": "Lodge or camp, confirmed in your quotation",
+  "included": "Please request the itemised quotation for your dates and group.",
+  "excluded": "International flights, visas and personal expenses unless specified in your quotation."
+ }
+]

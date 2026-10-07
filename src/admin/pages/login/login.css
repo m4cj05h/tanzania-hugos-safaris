@@ -1,0 +1,29 @@
+/* Admin sign-in: one sign-in card in the middle of the page. */
+.admin-login{--login-bg:#f6f4ee;--login-card:#fffefa;--login-border:#e4ddd0;--login-ink:#24231f;--login-muted:#77706a;--login-field:#fbf9f4;--login-accent:#a65712;display:grid;min-height:100vh;background:var(--login-bg);color:var(--login-ink)}
+[data-theme="dark"] .admin-login{--login-bg:#171916;--login-card:#20231e;--login-border:#353930;--login-ink:#f2eee5;--login-muted:#aaa69b;--login-field:#191b18;--login-accent:#edb87e}
+
+
+.admin-login-side{display:grid;place-items:center;padding:40px 24px}
+.admin-login-card{width:min(400px,100%);display:grid;gap:14px;padding:0;border:0;background:none;box-shadow:none}
+.admin-login-logo{width:64px;height:64px;border-radius:50%;justify-self:center}
+.admin-login-card h1{font-family:Georgia,serif;font-weight:400;font-size:38px;letter-spacing:-.8px;line-height:1.1;margin:0 0 10px;color:var(--login-ink);text-align:center}
+
+.admin-login-field{display:grid;gap:8px;font-size:13px;font-weight:600;color:var(--login-ink)}
+.admin-login-input{position:relative;display:flex;align-items:center}
+.admin-login-input>svg{position:absolute;left:14px;color:var(--login-muted);pointer-events:none}
+.admin-login-input input{width:100%;margin:0;padding:14px 14px 14px 42px;border:1px solid var(--login-border);border-radius:12px;background:var(--login-field);color:var(--login-ink);font-size:15px;transition:border-color .15s,box-shadow .15s}
+.admin-login-input input[name=password]{padding-right:46px}
+.admin-login-input input:focus{outline:none;border-color:#f58a20;box-shadow:0 0 0 3px #f58a2030}
+.admin-login-eye{position:absolute;right:6px;display:grid;place-items:center;width:36px;height:36px;padding:0;border:0;border-radius:8px;background:none;color:var(--login-muted);cursor:pointer}
+.admin-login-eye:hover{color:var(--login-ink)}
+
+.admin-login-error{display:flex;align-items:center;gap:8px;margin:0;padding:0;background:none;color:#e0705a!important;font-size:13px!important}
+.admin-login-error svg{flex-shrink:0}
+.admin-login-submit{display:inline-flex;align-items:center;justify-content:center;gap:10px;margin-top:6px;min-height:50px;border:0;border-radius:999px;background:#f58a20;color:#201d18;font-size:15px;font-weight:700;cursor:pointer;transition:background .15s,transform .15s}
+.admin-login-submit:hover:not(:disabled){background:#e47c16;transform:translateY(-1px)}
+.admin-login-submit:disabled{opacity:.6;cursor:wait}
+
+@media(max-width:800px){
+    .admin-login-side{padding:32px 18px}
+  .admin-login-card h1{font-size:32px}
+}

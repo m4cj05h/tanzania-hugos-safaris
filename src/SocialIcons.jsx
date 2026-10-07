@@ -1,0 +1,13 @@
+import React from 'react';
+import {h} from './locale';
+
+const icons = [
+  {name:'Email tanzaniahugossafaris@gmail.com', href:'mailto:tanzaniahugossafaris@gmail.com', path:<><circle cx="18" cy="18" r="18" fill="#fff"/><g transform="translate(5.4 5.4) scale(.525)"><path fill="#4caf50" d="M45 16.2l-5 2.75-5 4.75V40h7a3 3 0 0 0 3-3V16.2z"/><path fill="#1e88e5" d="M3 16.2l3.614 1.71L13 23.7V40H6a3 3 0 0 1-3-3V16.2z"/><path fill="#e53935" d="M35 11.2 24 19.45 13 11.2 12 17l1 6.7 11 8.25 11-8.25L36 17z"/><path fill="#c62828" d="M3 12.298V16.2l10 7.5V11.2L9.876 8.859A4.3 4.3 0 0 0 7.298 8 4.3 4.3 0 0 0 3 12.298z"/><path fill="#fbc02d" d="M45 12.298V16.2l-10 7.5V11.2l3.124-2.341A4.3 4.3 0 0 1 40.702 8 4.3 4.3 0 0 1 45 12.298z"/></g></>},
+  {name:'Instagram', href:'https://www.instagram.com/tanzaniahugossafaris', path:<><defs><linearGradient id="instagram-gradient" x1="0" y1="1" x2="1" y2="0"><stop stopColor="#feda75"/><stop offset=".35" stopColor="#fa7e1e"/><stop offset=".7" stopColor="#d62976"/><stop offset="1" stopColor="#962fbf"/></linearGradient></defs><rect width="36" height="36" rx="9" fill="url(#instagram-gradient)"/><rect x="8" y="8" width="20" height="20" rx="6" fill="none" stroke="white" strokeWidth="3"/><circle cx="18" cy="18" r="5" fill="none" stroke="white" strokeWidth="3"/><circle cx="26" cy="10" r="2" fill="white"/></>},
+  {name:'Facebook', href:'https://www.facebook.com/tanzaniahugossafaris/about/', path:<><circle cx="18" cy="18" r="18" fill="#1877f2"/><path d="M20.6 36V20.4h5.2l.8-6.1h-6V10.4c0-1.8.5-3 3-3h3.2V2a42 42 0 0 0-4.7-.2c-4.7 0-7.9 2.9-7.9 8.1v4.4H9v6.1h5.2V36" fill="white"/></>},
+  {name:'YouTube', href:'https://www.youtube.com/@TanzaniaHugosSafaris', path:<><rect x="0" y="3" width="36" height="30" rx="7" fill="#e50000"/><path d="m15 11 11 7-11 7z" fill="white"/></>},
+  {name:'LinkedIn', path:<><circle cx="18" cy="18" r="18" fill="#0a66c2"/><path d="M9 15h4v13H9zm2-7a2.3 2.3 0 1 1 0 4.6A2.3 2.3 0 0 1 11 8zm5 7h3.8v1.8c.5-1 1.8-2 4-2 4.2 0 5 2.7 5 6.2v7h-4v-6.2c0-1.5 0-3.4-2.1-3.4s-2.5 1.6-2.5 3.3V28h-4z" fill="white"/></>},
+  {name:'X', path:<><circle cx="18" cy="18" r="18" fill="#000"/><path d="M8 8h5l15 20h-5L8 8zm20 0h-3L8 28h3L28 8z" fill="white"/></>},
+];
+
+export default function SocialIcons(){return <div className="footer-socials" aria-label="Social media">{icons.map(({name,href,path})=>{const icon=<svg viewBox="0 0 36 36" width="36" height="36" aria-hidden="true">{path}</svg>;return href?<a key={name} href={href} {...(href.startsWith('mailto:')?{}:{target:'_blank',rel:'noopener noreferrer'})} aria-label={name} title={name}>{icon}</a>:<span key={name} role="img" aria-label={name}>{icon}</span>})}</div>}
