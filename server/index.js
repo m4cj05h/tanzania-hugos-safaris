@@ -116,9 +116,22 @@ app.use('/api',(req,res)=>res.status(404).json({error:'API endpoint not found'})
 app.use((err,req,res,next)=>{if(req.path.startsWith('/api/')){console.error('API request failed:',req.path,err.message);return res.status(err.status||500).json({error:'Unable to process this request. Please check your details or try again.'})}next(err)});
 // The built page shell, read once (and again only if the file changes).
 let shell={mtime:0,html:''};
-const indexHtml=()=>{const file=resolve('dist/index.html');const mtime=statSync(file).mtimeMs;if(mtime!==shell.mtime)shell={mtime,html:readFileSync(file,'utf8')};return shell.html};
+const indexTemplate=()=>{
+  const candidates=[resolve('dist/index.html'),resolve('index.html')];
+  const file=candidates.find(existsSync);
+  if(!file)throw Error('No HTML entry point found in dist/ or the project root.');
+  const mtime=statSync(file).mtimeMs;
+  if(mtime!==shell.mtime)shell={mtime,html:readFileSync(file,'utf8')};
+  return shell.html;
+};
 async function startServer(){
-  if(production){app.use(express.static(resolve('dist'),{index:false,setHeaders(res,filePath){if(/\/assets\/.+-[a-zA-Z0-9_-]{8,}\.(?:js|css)$/.test(filePath))res.setHeader('Cache-Control','public, max-age=31536000, immutable');else if(/\/images\//.test(filePath))res.setHeader('Cache-Control','public, max-age=604800, stale-while-revalidate=86400');else if(/\/fonts\/[a-z]+-[A-Za-z0-9_-]{16,}\.woff2$/.test(filePath))res.setHeader('Cache-Control','public, max-age=31536000, immutable')}}));app.get('/{*path}',(req,res)=>{const moved=redirectFor(req.path);if(moved)return res.redirect(301,moved+(req.url.includes('?')?req.url.slice(req.url.indexOf('?')):''));const content=getContent();const admin=/^\/admin(?:\/|$)/i.test(req.path);const found=admin||knownPaths(content,staticPages).includes(req.path);res.status(found?200:404).set('Cache-Control',admin?'no-store':'no-cache').type('html').send(renderPage(indexHtml(),req.path,content,{...builtInSizes,...uploadedPhotoSizes()},found))})}else{const{createServer}=await import('vite');const vite=await createServer({server:{middlewareMode:true},appType:'spa'});app.use(vite.middlewares)}
+  if(production){
+    for(const root of [resolve('dist'),resolve('public')].filter(existsSync)){
+      app.use(express.static(root,{index:false,setHeaders(res,filePath){if(/\/assets\/.+-[a-zA-Z0-9_-]{8,}\.(?:js|css)$/.test(filePath))res.setHeader('Cache-Control','public, max-age=31536000, immutable');else if(/\/images\//.test(filePath))res.setHeader('Cache-Control','public, max-age=604800, stale-while-revalidate=86400');else if(/\/fonts\/[a-z]+-[A-Za-z0-9_-]{16,}\.woff2$/.test(filePath))res.setHeader('Cache-Control','public, max-age=31536000, immutable')}}));
+    }
+    if(existsSync(resolve('src')))app.use('/src',express.static(resolve('src')));
+    app.get('/{*path}',(req,res)=>{const moved=redirectFor(req.path);if(moved)return res.redirect(301,moved+(req.url.includes('?')?req.url.slice(req.url.indexOf('?')):''));const content=getContent();const admin=/^\/admin(?:\/|$)/i.test(req.path);const found=admin||knownPaths(content,staticPages).includes(req.path);res.status(found?200:404).set('Cache-Control',admin?'no-store':'no-cache').type('html').send(renderPage(indexTemplate(),req.path,content,{...builtInSizes,...uploadedPhotoSizes()},found))})
+  }else{const{createServer}=await import('vite');const vite=await createServer({server:{middlewareMode:true},appType:'spa'});app.use(vite.middlewares)}
   app.listen(process.env.PORT||3000,process.env.HOST||(production?'0.0.0.0':'127.0.0.1'),()=>console.log('Tanzania Hugos Safaris listening on port '+(process.env.PORT||3000)));
 }
 startServer().catch(error=>{console.error('Failed to start server:',error);process.exitCode=1});

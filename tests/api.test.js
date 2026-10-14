@@ -1,7 +1,8 @@
-import{test,before,after}from'node:test';import assert from'node:assert/strict';import{spawn}from'node:child_process';import{mkdtempSync,rmSync}from'node:fs';import{tmpdir}from'node:os';import{join}from'node:path';
+import{test,before,after}from'node:test';import assert from'node:assert/strict';import{spawn}from'node:child_process';import{chmodSync,existsSync,mkdtempSync,readdirSync,rmSync}from'node:fs';import{tmpdir}from'node:os';import{join}from'node:path';
 const dir=mkdtempSync(join(tmpdir(),'hugos-test-'));const base='http://127.0.0.1:3197';let server;let cookie;
+function removeDir(path){if(!existsSync(path))return;for(const entry of readdirSync(path,{withFileTypes:true})){const target=join(path,entry.name);if(entry.isDirectory())removeDir(target);else{chmodSync(target,0o666);rmSync(target,{force:true});}}chmodSync(path,0o777);rmSync(path,{recursive:true,force:true});}
 before(async()=>{server=spawn(process.execPath,['server/index.js'],{env:{...process.env,NODE_ENV:'production',PORT:'3197',ADMIN_USERNAME:'Integration-Admin',ADMIN_PASSWORD:'integration-test-password',DATA_DIR:dir},stdio:'pipe'});for(let i=0;i<100;i++){try{if((await fetch(base+'/api/content')).ok)return}catch{}await new Promise(r=>setTimeout(r,100))}throw Error('Test server did not start')});
-after(()=>{server?.kill();rmSync(dir,{recursive:true,force:true})});
+after(async()=>{server?.kill('SIGTERM');await new Promise(resolve=>server?.once('exit',resolve));removeDir(dir)});
 const post=(path,data,headers={})=>fetch(base+path,{method:'POST',headers:{'Content-Type':'application/json',...headers},body:JSON.stringify(data)});
 test('public content is seeded; admin inbox rejects anonymous users',async()=>{assert.equal((await(await fetch(base+'/api/content')).json()).packages.length,37);assert.equal((await fetch(base+'/api/admin/enquiries')).status,401)});
 test('invalid and cross-origin submissions are rejected',async()=>{assert.equal((await post('/api/enquiries',{name:'A'})).status,400);assert.equal((await post('/api/login',{password:'bad'})).status,401);assert.equal((await post('/api/enquiries',{}, {Origin:'https://untrusted.example'})).status,403)});
