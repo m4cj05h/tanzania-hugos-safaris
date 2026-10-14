@@ -3,6 +3,7 @@ import {Link, useParams} from 'react-router-dom';
 import {ArrowUpRight, BookOpen} from 'lucide-react';
 import {h} from './locale';
 import {photo} from './images';
+import {relatedTripLinks} from './seo-content';
 import {publishedPosts, formatPostDate, readingMinutes, postBlocks, inlineParts} from './blog';
 import OpenBook from './OpenBook';
 import './blog.css';
@@ -28,7 +29,7 @@ export function BookCover({post,img,size='small'}){
 // A post shown as a book on the shelf.
 export function BookCard({post}){
   return <Link to={'/blog/'+post.id} className="book-card">
-    <BookCover post={post} img={<img {...photo(post.image,'(max-width: 700px) 70vw, 300px')} alt="" loading="lazy"/>}/>
+    <BookCover post={post} img={<img {...photo(post.image,'(max-width: 700px) 70vw, 300px')} alt={post.title} loading="lazy" decoding="async"/>}/>
     <span className="book-card-meta"><time dateTime={post.date}>{formatPostDate(post.date)}</time> · {readingMinutes(post.body)} min read</span>
   </Link>;
 }
@@ -60,10 +61,11 @@ export function BookReader({content,notFound}){
   useEffect(()=>{if(post)document.title=`${post.title} | Tanzania Hugos Safaris`;},[post?.title]);
   if(!post)return content.photoSizes?notFound:<main className="book-reader" aria-busy="true"/>;
   const more=posts.filter(item=>item.id!==post.id).slice(0,4);
+  const related=relatedTripLinks(`${post.title} ${post.summary||''} ${post.body}`,content,`/blog/${post.id}`);
   return <main className="book-reader">
     <section className="book-cover-stage">
       <button type="button" className="book-cover-button" onClick={()=>setOpen(true)} aria-label={'Open the book: '+post.title}>
-        <BookCover post={post} size="large" img={<img {...photo(post.image,'(max-width: 700px) 80vw, 460px')} alt="" fetchPriority="high"/>}/>
+        <BookCover post={post} size="large" img={<img {...photo(post.image,'(max-width: 700px) 80vw, 460px')} alt={post.title} fetchPriority="high" decoding="async"/>}/>
       </button>
       <div className="book-cover-info">
         <span className="eyebrow">{post.category||'STORY'}</span>
@@ -77,6 +79,7 @@ export function BookReader({content,notFound}){
     <article className="book-text-hidden">
       {postBlocks(post).map(block=>block.type==='heading'?<h2 key={block.id}>{block.text}</h2>:block.type==='quote'?<blockquote key={block.id}><Inline text={block.text}/></blockquote>:block.type==='image'?(block.caption?<p key={block.id}>{block.caption}</p>:null):<p key={block.id}><Inline text={block.text}/></p>)}
     </article>
+    {related.length>0&&<section className="container section"><h2>Related Tanzania trips and guides</h2><ul>{related.map(({href,label})=><li key={href}><Link to={href}>{label}</Link></li>)}</ul></section>}
     {open&&<OpenBook post={post} onClose={close}/>}
     {more.length>0&&<section className="container section"><div className="section-heading"><div><span className="eyebrow">KEEP READING</span><h2>More from the library.</h2></div><Link className="text-link" to="/blog">All books <ArrowUpRight size={18}/></Link></div><div className="book-shelf">{more.map(item=><BookCard post={item} key={item.id}/>)}</div></section>}
   </main>;

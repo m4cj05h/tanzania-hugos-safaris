@@ -1,6 +1,7 @@
 import {h} from './locale';
 import React, {useEffect, useState} from 'react';
 import {getPartners} from './partners.js';
+import {photo} from './images.js';
 
 export default function PartnerSlideshow({content}) {
   const partners=getPartners(content);
@@ -29,7 +30,7 @@ export default function PartnerSlideshow({content}) {
     </svg>
     <div className="container">
       <div className="partner-heading"><h2 id="partners-heading">Our partners.</h2></div>
-      <div className="partner-pair" key={current}>{visible.map(partner=><div className="partner-logo" key={partner.id}><img src={'/images/'+partner.image} alt={partner.name} loading="lazy"/></div>)}</div>
+      <div className="partner-pair" key={current}>{visible.map(partner=><div className="partner-logo" key={partner.id}><img {...photo(partner.image,'(max-width: 700px) 35vw, 180px')} alt={partner.name} loading="lazy" decoding="async"/></div>)}</div>
     </div>
   </section>;
 }

@@ -81,10 +81,23 @@ app.use('/api',(req,res,next)=>{if(!['GET','HEAD'].includes(req.method)&&req.hea
 const auth=(req,res,next)=>{const token=req.headers.cookie?.split('; ').find(x=>x.startsWith('hugos_session='))?.slice(14);const session=token&&sessions.get(token);const user=session&&session.expires>Date.now()&&users.get(session.userId);if(!user||!user.active){if(token)sessions.delete(token);return res.status(401).json({error:'Please sign in'})}req.token=token;req.user=user;next()};
 // Lets a request through only when the signed-in user's role allows it.
 const can=permission=>(req,res,next)=>req.user.permissions.includes(permission)?next():res.status(403).json({error:'Your role does not allow this. Ask an owner for access.'});
-registerImageSizes(app,{imagesDir:resolve(production?'dist/images':'public/images'),uploadsDir:resolve(process.env.DATA_DIR||'data','uploads'),cacheDir:resolve(process.env.DATA_DIR||'data','image-cache')});
+registerImageSizes(app,{imagesDir:resolve(production&&existsSync(resolve('dist/images'))?'dist/images':'public/images'),uploadsDir:resolve(process.env.DATA_DIR||'data','uploads'),cacheDir:resolve(process.env.DATA_DIR||'data','image-cache')});
 registerMedia(app,[auth,can('content')]);
-app.get('/robots.txt',(req,res)=>res.type('text/plain').send('User-agent: *\nAllow: /\nSitemap: '+(process.env.SITE_URL||'https://www.tanzaniahugossafaris.com')+'/sitemap.xml'));
-app.get('/sitemap.xml',(req,res)=>{const c=getContent();const paths=knownPaths(c,staticPages).filter(p=>!['/privacy-policy','/terms','/refund-policy'].includes(p));res.type('application/xml').send('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'+paths.map(p=>'<url><loc>'+(process.env.SITE_URL||'https://www.tanzaniahugossafaris.com')+p+'</loc></url>').join('')+'</urlset>')});
+const siteBase=()=> (process.env.SITE_URL||'https://tanzaniahugossafaris.com').replace(/\/$/,'');
+const xmlEscape=value=>String(value).replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[char]));
+app.get('/robots.txt',(req,res)=>res.type('text/plain').send([
+  'User-agent: *','Allow: /',
+  'User-agent: Googlebot','Allow: /',
+  'User-agent: Bingbot','Allow: /',
+  'User-agent: GPTBot','Allow: /',
+  'User-agent: PerplexityBot','Allow: /',
+  `Sitemap: ${siteBase()}/sitemap.xml`,
+].join('\n')));
+app.get('/sitemap.xml',(req,res)=>{
+  const paths=knownPaths(getContent(),staticPages);
+  const urls=paths.map(path=>`<url><loc>${xmlEscape(siteBase()+(path==='/'?'/':path))}</loc></url>`).join('');
+  res.type('application/xml').send(`<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urls}</urlset>`);
+});
 const getRates=createRateService({file:`${process.env.DATA_DIR||'data'}/exchange-rates.json`});
 app.get('/api/exchange-rates',async(req,res)=>{res.set('Cache-Control','public, max-age=3600');res.json(await getRates())});
 const googleReviews=createGoogleReviews({file:`${process.env.DATA_DIR||'data'}/google-reviews.json`});
@@ -115,10 +128,23 @@ app.patch('/api/admin/enquiries/:id',auth,can('enquiries'),(req,res)=>{if(!['New
 app.use('/api',(req,res)=>res.status(404).json({error:'API endpoint not found'}));
 app.use((err,req,res,next)=>{if(req.path.startsWith('/api/')){console.error('API request failed:',req.path,err.message);return res.status(err.status||500).json({error:'Unable to process this request. Please check your details or try again.'})}next(err)});
 // The built page shell, read once (and again only if the file changes).
-let shell={mtime:0,html:''};
-const indexHtml=()=>{const file=resolve('dist/index.html');const mtime=statSync(file).mtimeMs;if(mtime!==shell.mtime)shell={mtime,html:readFileSync(file,'utf8')};return shell.html};
+let shell={file:'',mtime:0,html:''};
+const indexHtml=()=>{
+  const file=[resolve('dist/index.html'),resolve('index.html')].find(existsSync);
+  if(!file)throw Error('No HTML entry point found in dist/ or the project root.');
+  const mtime=statSync(file).mtimeMs;
+  if(file!==shell.file||mtime!==shell.mtime)shell={file,mtime,html:readFileSync(file,'utf8')};
+  return shell.html;
+};
 async function startServer(){
-  if(production){app.use(express.static(resolve('dist'),{index:false,setHeaders(res,filePath){if(/\/assets\/.+-[a-zA-Z0-9_-]{8,}\.(?:js|css)$/.test(filePath))res.setHeader('Cache-Control','public, max-age=31536000, immutable');else if(/\/images\//.test(filePath))res.setHeader('Cache-Control','public, max-age=604800, stale-while-revalidate=86400');else if(/\/fonts\/[a-z]+-[A-Za-z0-9_-]{16,}\.woff2$/.test(filePath))res.setHeader('Cache-Control','public, max-age=31536000, immutable')}}));app.get('/{*path}',(req,res)=>{const moved=redirectFor(req.path);if(moved)return res.redirect(301,moved+(req.url.includes('?')?req.url.slice(req.url.indexOf('?')):''));const content=getContent();const admin=/^\/admin(?:\/|$)/i.test(req.path);const found=admin||knownPaths(content,staticPages).includes(req.path);res.status(found?200:404).set('Cache-Control',admin?'no-store':'no-cache').type('html').send(renderPage(indexHtml(),req.path,content,{...builtInSizes,...uploadedPhotoSizes()},found))})}else{const{createServer}=await import('vite');const vite=await createServer({server:{middlewareMode:true},appType:'spa'});app.use(vite.middlewares)}
+  if(production){
+    const dist=resolve('dist');
+    const publicFiles=resolve('public');
+    if(existsSync(dist))app.use(express.static(dist,{index:false,setHeaders(res,filePath){if(/\/assets\/.+-[a-zA-Z0-9_-]{8,}\.(?:js|css)$/.test(filePath))res.setHeader('Cache-Control','public, max-age=31536000, immutable');else if(/\/images\//.test(filePath))res.setHeader('Cache-Control','public, max-age=604800, stale-while-revalidate=86400');else if(/\/fonts\/[a-z]+-[A-Za-z0-9_-]{16,}\.woff2$/.test(filePath))res.setHeader('Cache-Control','public, max-age=31536000, immutable')}}));
+    if(existsSync(publicFiles))app.use(express.static(publicFiles,{index:false}));
+    if(!existsSync(dist))app.use('/src',express.static(resolve('src'),{index:false}));
+    app.get('/{*path}',(req,res)=>{const moved=redirectFor(req.path);if(moved)return res.redirect(301,moved+(req.url.includes('?')?req.url.slice(req.url.indexOf('?')):''));const content=getContent();const admin=/^\/admin(?:\/|$)/i.test(req.path);const found=admin||knownPaths(content,staticPages).includes(req.path);res.status(found?200:404).set('Cache-Control',admin?'no-store':'no-cache').type('html').send(renderPage(indexHtml(),req.path,content,{...builtInSizes,...uploadedPhotoSizes()},found))})
+  }else{const{createServer}=await import('vite');const vite=await createServer({server:{middlewareMode:true},appType:'spa'});app.use(vite.middlewares)}
   app.listen(process.env.PORT||3000,process.env.HOST||(production?'0.0.0.0':'127.0.0.1'),()=>console.log('Tanzania Hugos Safaris listening on port '+(process.env.PORT||3000)));
 }
 startServer().catch(error=>{console.error('Failed to start server:',error);process.exitCode=1});

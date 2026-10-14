@@ -1,0 +1,40 @@
+# Tanzania Hugos Safaris
+
+> Tanzania-based travel company offering safari tours, Kilimanjaro climbs, Zanzibar holidays and day trips.
+
+## Main pages
+
+- [Home](https://tanzaniahugossafaris.com/)
+- [Tanzania safari tours](https://tanzaniahugossafaris.com/safaris)
+- [Day trips](https://tanzaniahugossafaris.com/day-trips)
+- [Zanzibar tours](https://tanzaniahugossafaris.com/zanzibar-tours)
+- [Kilimanjaro climbs](https://tanzaniahugossafaris.com/kilimanjaro)
+- [Safari and Zanzibar combinations](https://tanzaniahugossafaris.com/combination-packages)
+- [AFCON travel](https://tanzaniahugossafaris.com/afcon-tanzania)
+- [Tanzania travel guide](https://tanzaniahugossafaris.com/travel-guide)
+- [Travel blog](https://tanzaniahugossafaris.com/blog)
+- [Plan a trip](https://tanzaniahugossafaris.com/plan-my-trip)
+- [Contact](https://tanzaniahugossafaris.com/contact)
+
+## Destinations
+
+- [Serengeti](https://tanzaniahugossafaris.com/destinations/serengeti)
+- [Ngorongoro](https://tanzaniahugossafaris.com/destinations/ngorongoro)
+- [Tarangire](https://tanzaniahugossafaris.com/destinations/tarangire)
+- [Lake Manyara](https://tanzaniahugossafaris.com/destinations/lake-manyara)
+
+## Trip information
+
+Published package pages contain the available itinerary, duration, starting price and inclusions where those details are provided. Request a written quotation to confirm availability and the details that apply to your dates and group. Wildlife sightings, migration crossings and summit success are not guaranteed.
+
+The [XML sitemap](https://tanzaniahugossafaris.com/sitemap.xml) lists published public pages and trip content.
+
+## Contact
+
+- Phone and WhatsApp: +255 680 853 664
+- Email: tanzaniahugossafaris@gmail.com
+
+## TODO: confirm before adding
+
+- Registered business name and tourism licence details.
+- Public office address and verified team biographies.
