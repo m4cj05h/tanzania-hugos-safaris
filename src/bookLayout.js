@@ -21,7 +21,8 @@ export function itemHTML(item){
   if(item.type==='heading')return `<h2>${escape(item.text)}</h2>`;
   if(item.type==='image'){
     const image=photo(item.image,'(max-width: 700px) 90vw, 520px');
-    return `<figure><img src="${escape(image.src)}"${image.srcSet?` srcset="${escape(image.srcSet)}" sizes="${escape(image.sizes)}"`:''} alt="${escape(item.caption||'')}" style="height:${item.height}px">${item.caption?`<figcaption>${escape(item.caption)}</figcaption>`:''}</figure>`;
+    const fallbackAlt=String(item.image||'').split('/').pop().replace(/\.[^.]+$/,'').replace(/[-_]+/g,' ');
+    return `<figure><img src="${escape(image.src)}"${image.srcSet?` srcset="${escape(image.srcSet)}" sizes="${escape(image.sizes)}"`:''}${image.width?` width="${image.width}" height="${image.height}"`:''} alt="${escape(item.caption||fallbackAlt)}" loading="lazy" decoding="async" style="height:${item.height}px">${item.caption?`<figcaption>${escape(item.caption)}</figcaption>`:''}</figure>`;
   }
   const classes=[item.lead&&'lead',item.cont&&'cont',item.split&&'split'].filter(Boolean).join(' ');
   const tag=item.type==='quote'?'blockquote':'p';

@@ -21,6 +21,6 @@ export function photo(image,sizes){
   const src='/images/'+image;
   const [width,height]=known[image]||[];
   const widths=width?[480,800,1200].filter(size=>size<width*0.9):[];
-  if(!widths.length)return {src};
-  return {src,srcSet:[...widths.map(size=>`${src}?w=${size} ${size}w`),`${src} ${width}w`].join(', '),sizes,ref:img=>fitToBox(img,width/height)};
+  if(!widths.length)return {src,...(width&&height?{width,height}:{})};
+  return {src,width,height,srcSet:[...widths.map(size=>`${src}?w=${size} ${size}w`),`${src} ${width}w`].join(', '),sizes,ref:img=>fitToBox(img,width/height)};
 }

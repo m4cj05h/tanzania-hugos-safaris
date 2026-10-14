@@ -12,6 +12,7 @@ const mapSizes='(max-width: 700px) 92vw, 760px';
 
 import KilimanjaroComments from './KilimanjaroComments';
 import {defaultKilimanjaroRoutes} from './data';
+import {categoryFAQs} from './seo-content';
 import {TrekIcon,featureIcon} from './trekIcons';
 import './kilimanjaro.css';
 
@@ -109,8 +110,6 @@ export default function KilimanjaroPage({packages=[],content={}}) {
   const tripFor=slug=>{const brochureTrip=defaultKilimanjaroRoutes.find(item=>item.slug===slug);const savedTrip=(pageContent.kilimanjaroRoutes||[]).find(item=>item.slug===slug);return brochureTrip?{...brochureTrip,price:savedTrip?.price??brochureTrip.price}:undefined;};
   const machame = packages.find(p=>p.published && p.category==='Kilimanjaro' && p.id==='machame-route');
   const otherClimbs = packages.filter(p=>p.published && p.category==='Kilimanjaro' && p.id!=='machame-route');
-  const rawPrice = Number(machame?.price);
-  const base = Number.isFinite(rawPrice) && rawPrice>0 ? rawPrice : 0;
   const publishedSelection = route===0 && !!machame;
   const days = machame?.days || 6;
   const query = new URLSearchParams({interest:'Kilimanjaro', adults:String(guests), requests:`I am interested in the ${selected.name} route for ${guests} ${guests===1?'climber':'climbers'}. ${publishedSelection?`${days}-day published itinerary.`:'Please advise on a tailored itinerary and pacing.'}`});
@@ -182,11 +181,7 @@ export default function KilimanjaroPage({packages=[],content={}}) {
     <section className="container kili-preparation kili-section" id="preparation" tabIndex="-1"><div className="kili-section-head"><div><h2>Prepare for your climb</h2></div><p>Keep these essentials on your planning list. We’ll talk through the details as we build your itinerary.</p></div><div className="kili-prep-grid">{[['clock','01','Make time to prepare','Build familiarity with long walks and hills, and share your experience when choosing your itinerary.'],['backpack','02','Get your kit together','Think layers, well-worn hiking boots and rain protection. Ask for the kit list and available rental options.'],['shield','03','Check the practical details','Discuss altitude with a qualified professional and confirm that your travel insurance covers your planned trek.'],['flight','04','Connect the whole journey','Allow time around the climb for arrival, briefing and onward travel. We’ll confirm your transfers in the quote.']].map(([icon,n,title,copy])=><article key={n}><div><TrekIcon name={icon} size={36}/></div><h3>{title}</h3><p>{copy}</p></article>)}</div></section>
 
     <section className="kili-faq kili-section" id="questions" tabIndex="-1"><div className="container kili-faq-layout"><div><h2>Frequently asked questions</h2><p>Still curious about something? A conversation with our local team is a good place to start.</p></div><div className="kili-faq-list">
-      <details><summary>Which Kilimanjaro route should I choose?<Plus size={18}/></summary><p>Machame offers a varied southern approach, Lemosho starts on the western slopes, and Marangu has hut accommodation. Share your available time, experience and preferences so we can discuss a suitable itinerary.</p></details>
-      <details><summary>How much does a Kilimanjaro climb cost?<Plus size={18}/></summary><p>{base?<>Our published {days}-day Machame journey starts at <Price amount={base}/> per person. </>:'Ask our team for current Kilimanjaro rates. '}Your dates, route, group size and services determine the final quote, which we confirm in writing.</p></details>
-      <details><summary>Can I spend longer on the mountain?<Plus size={18}/></summary><p>Yes. Ask about a longer itinerary when planning your climb. We’ll discuss pacing and confirm the duration, camps and cost with you.</p></details>
-      <details><summary>What is included in my quote?<Plus size={18}/></summary><p>Your written quotation lists the included services and exclusions. Ask us to confirm park fees, guides and porters, meals, camping or hut arrangements, equipment, transfers and accommodation before booking.</p></details>
-      <details><summary>Can I arrange a private climb or add a safari?<Plus size={18}/></summary><p>We can discuss private and group options, as well as safari or Zanzibar extensions. Send us your preferred dates and group size so we can confirm the available arrangements.</p></details>
+      {categoryFAQs('Kilimanjaro',content).map(item=><details key={item.question}><summary>{item.question}<Plus size={18}/></summary><p>{item.answer}</p></details>)}
     </div></div></section>
     <KilimanjaroComments/>
     <section className="kili-final"><div className="container"><div><h2>Ready to plan your Kilimanjaro climb?</h2><p>Tell us your dates and ideas. We’ll help with the next step.</p></div><Link className="button" to={enquiry}>Request a quote <ArrowRight size={18}/></Link></div></section>

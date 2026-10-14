@@ -96,7 +96,7 @@ export default function OpenBook({post,onClose}){
   const face=(page,side)=>{
     if(!page)return null;
     if(page.kind==='cover')return <div className="ob-face ob-cover">
-      <span className="book-cover"><img {...photo(post.image,'(max-width: 700px) 90vw, 600px')} alt=""/><span className="book-cover-category">{category}</span><span className="book-cover-text"><strong>{post.title}</strong>{post.author&&<span className="book-cover-author">{post.author}</span>}</span></span>
+      <span className="book-cover"><img {...photo(post.image,'(max-width: 700px) 90vw, 600px')} alt={post.title} loading="lazy" decoding="async"/><span className="book-cover-category">{category}</span><span className="book-cover-text"><strong>{post.title}</strong>{post.author&&<span className="book-cover-author">{post.author}</span>}</span></span>
     </div>;
     if(page.kind==='endpaper')return <div className={'ob-face ob-endpaper ob-side-'+side}><div className="ob-exlibris"><span>Ex libris</span><strong>Tanzania Hugos Safaris</strong><span>The Hugos Library</span></div></div>;
     if(page.kind==='blank')return <div className={'ob-face ob-paper ob-side-'+side}/>;
